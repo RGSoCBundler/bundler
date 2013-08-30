@@ -85,11 +85,12 @@ module Bundler
 
         def git(command, check_errors=true)
           if allow?
+
+            raise GitError, "Git is not installed!" if !Bundler.which("git")
+
             out = SharedHelpers.with_clean_git_env { %x{git #{command}} }
 
             if check_errors && $?.exitstatus != 0
-                raise GitError, "Git is not installed!" if !Bundler.which("git")
-            elsif
               msg = "Git error: command `git #{command}` in directory #{Dir.pwd} has failed."
               msg << "\nIf this error persists you could try removing the cache directory '#{path}'" if path.exist?
               raise GitError, msg
