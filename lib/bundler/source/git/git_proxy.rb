@@ -86,7 +86,7 @@ module Bundler
         def git(command, check_errors=true)
           if allow?
 
-            raise GitError, "Git is not installed!" if !Bundler.which("git")
+            raise GitError, "Git is not installed!" if !Bundler.git_present?
 
             out = SharedHelpers.with_clean_git_env { %x{git #{command}} }
 
