@@ -907,7 +907,7 @@ describe "bundle install with git sources" do
         end
       G
 
-      bundle "update"
+      bundle "update", :env => {"PATH" => ""}
       expect(out).to include("Git is not installed!")
     end
   end
