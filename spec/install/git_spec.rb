@@ -895,6 +895,21 @@ describe "bundle install with git sources" do
       expect(ENV['GIT_DIR']).to eq('bar')
       expect(ENV['GIT_WORK_TREE']).to eq('bar')
     end
+
+  end
+
+  describe "without git installed" do
+    it "prints a better error message" do
+
+      install_gemfile <<-G
+        git "#{lib_path('foo-1.0')}", :branch => "omg" do
+          gem 'foo'
+        end
+      G
+
+      bundle "update"
+      expect(out).to include("Git is not installed!")
+    end
   end
 
 end
