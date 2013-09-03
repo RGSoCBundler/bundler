@@ -345,6 +345,10 @@ module Bundler
       @gemspec_cache = {}
     end
 
+    def git_present?
+      @git_present ||= Bundler.which("git")
+    end
+
   private
 
     def eval_yaml_gemspec(path, contents)
@@ -402,4 +406,5 @@ module Bundler
     end
 
   end
+
 end
