@@ -35,7 +35,7 @@ module Bundler
   rescue Exception => e
     Bundler.ui.error <<-ERR, :wrap => true
       Unfortunately, a fatal error has occurred. Please see the Bundler \
-      troubleshooting documentation at http://bit.ly/bundler-issues. Thanks!
+      troubleshooting documentation at http://bit.ly/bundler-issues. Thanks Jen!
     ERR
     raise e
   end
