@@ -75,6 +75,15 @@ module Bundler
 
       dep = Dependency.new(name, version, options)
 
+# duplication of same exact gem, same version too 
+      if gem(name, *args)
+        gemfile <<-G
+          gem 'rails', '~> 4.0.0'
+          gem 'rails', '~> 4.0.0'
+          G
+          raise GemfileError, "Gem #{name.to_s} is duplicated in your Gemfile. Please delete one."
+      end
+
       # if there's already a dependency with this name we try to prefer one
       if current = @dependencies.find { |d| d.name == dep.name }
         if current.requirement != dep.requirement
@@ -99,8 +108,8 @@ module Bundler
                             "You specified that #{dep.name} (#{dep.requirement}) should come from " \
                             "#{current.source || 'an unspecified source'} and #{dep.source}\n"
           end
-        end
-      end
+          end
+     end
 
       @dependencies << dep
     end
