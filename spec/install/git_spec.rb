@@ -558,14 +558,14 @@ describe "bundle install with git sources" do
       s.write "lib/forced.rb", "FORCED = '1.1'"
     end
 
-    bundle "update"
+    bundle "update --all"
     should_be_installed "forced 1.1"
 
     Dir.chdir(lib_path('forced-1.0')) do
       `git reset --hard HEAD^`
     end
 
-    bundle "update"
+    bundle "update --all"
     should_be_installed "forced 1.0"
   end
 
@@ -907,7 +907,7 @@ describe "bundle install with git sources" do
         end
       G
 
-      bundle "update", :env => {"PATH" => ""}
+      bundle "update --all", :env => {"PATH" => ""}
       expect(out).to include("You need to install git to be able to use gems from git repositories. For help installing git, please refer to GitHub's tutorial at https://help.github.com/articles/set-up-git")
     end
   end

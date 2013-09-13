@@ -1,6 +1,18 @@
 require "spec_helper"
 
 describe "bundle update" do
+  it "prints a message" do
+    bundle "update"
+    expect(out).to include("Are you sure you want to update every single gem in your bundle?!\n\nIf yes, run bundle update --all.\nIf you want to update an individual gem, run bundle update <gem_name>.\nIf not, have a good day!")
+  end
+
+  it "does not print bundle was updated" do
+    bundle "update"
+    expect(out).to_not include("Your bundle is updated!")
+  end
+end
+
+describe "bundle update --all" do
   before :each do
     build_repo2
 
@@ -17,7 +29,7 @@ describe "bundle update" do
         build_gem "activesupport", "3.0"
       end
 
-      bundle "update"
+      bundle "update --all"
       should_be_installed "rack 1.2", "rack-obama 1.0", "activesupport 3.0"
     end
 
@@ -28,14 +40,14 @@ describe "bundle update" do
         gem "rack-obama"
         exit!
       G
-      bundle "update"
+      bundle "update -all"
       expect(bundled_app("Gemfile.lock")).to exist
     end
   end
 
   describe "--quiet argument" do
     it "shows UI messages without --quiet argument" do
-      bundle "update"
+      bundle "update --all"
       expect(out).to include("Fetching source")
     end
 
@@ -119,7 +131,7 @@ describe "bundle update without a Gemfile.lock" do
       gem "rack", "1.0"
     G
 
-    bundle "update"
+    bundle "update --all"
 
     should_be_installed "rack 1.0.0"
   end
@@ -140,12 +152,12 @@ describe "bundle update when a gem depends on a newer version of bundler" do
   end
 
   it "should not explode" do
-    bundle "update"
+    bundle "update --all"
     expect(err).to be_empty
   end
 
   it "should explain that bundler conflicted" do
-    bundle "update"
+    bundle "update --all"
     expect(out).not_to match(/in snapshot/i)
     expect(out).to match(/current Bundler version/i)
     expect(out).to match(/perhaps you need to update bundler/i)
