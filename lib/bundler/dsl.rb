@@ -62,8 +62,7 @@ module Bundler
         raise InvalidOption, "There are multiple gemspecs at #{expanded_path}. Please use the :name option to specify which one."
       end
     end
-
-    def gem(name, *args)
+def gem(name, *args)
       if name.is_a?(Symbol)
         raise GemfileError, %{You need to specify gem names as Strings. Use 'gem "#{name.to_s}"' instead.}
       end
@@ -83,7 +82,17 @@ module Bundler
           elsif dep.type == :development
             return
           else
-            raise GemfileError, "You cannot specify the same gem twice with different version requirements. \n" \
+            raise GemfileError, "You cannot specify the same gem twice with different version requirements.\n" \
+                            "You specified: #{current.name} (#{current.requirement}) and " \
+                            "#{dep.name} (#{dep.requirement})\n"
+          end
+        end
+
+      # same gem, same version
+      if current = @dependencies.find { |d| d.name == dep.name }
+        if current.requirement == current.requirement
+            raise GemfileError, "You specified identical gems. This will not effect performance but you may\n" \
+                            " want to delete one to keep your code DRY.\n"\
                             "You specified: #{current.name} (#{current.requirement}) and " \
                             "#{dep.name} (#{dep.requirement})\n"
           end
@@ -104,8 +113,7 @@ module Bundler
 
       @dependencies << dep
     end
-
-    def source(source, options = {})
+def source(source, options = {})
       case source
       when :gemcutter, :rubygems, :rubyforge then
         Bundler.ui.warn "The source :#{source} is deprecated because HTTP " \
