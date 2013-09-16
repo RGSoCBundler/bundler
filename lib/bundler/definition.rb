@@ -26,7 +26,6 @@ module Bundler
       Dsl.evaluate(gemfile, lockfile, unlock)
     end
 
-
     #
     # How does the new system work?
     #
@@ -386,6 +385,11 @@ module Bundler
 
         raise RubyVersionMismatch, msg
       end
+    end
+
+    def validate_bundler!
+      locked_spec = Bundler.locked_gems.specs.find { |s| s.name == "bundler"}
+      Bundler::VERSION
     end
 
   private

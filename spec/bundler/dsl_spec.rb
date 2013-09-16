@@ -59,14 +59,13 @@ describe Bundler::Dsl do
   end
 
   describe "#gem" do
-    it "will raise an Error if the gem is duplicated" do
+    it "will display a Warning if the gem is duplicated" do
       gemfile <<-G
         gem 'rails', '~> 4.0.0'
         gem 'rails', '~> 4.0.0'
       G
-
-      expect { Bundler::Dsl.evaluate(bundled_app("Gemfile"), nil, true) }.
-        to raise_error(Bundler::GemfileError)
+      bundle :install
+      expect(out).to include("You specified:")
     end
   end
 end
