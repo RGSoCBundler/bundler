@@ -524,7 +524,6 @@ module Bundler
       into the system wide Rubygems repository.
     D
     def exec(*args)
-      Bundler.definition.validate_bundler!
       Bundler.definition.validate_ruby!
       Bundler.load.setup_environment
 
