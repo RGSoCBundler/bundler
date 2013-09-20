@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "bundle update" do
+describe "bundle update --all" do
   describe "git sources" do
     it "floats on a branch when :branch is used" do
       build_git  "foo", "1.0"
@@ -16,7 +16,7 @@ describe "bundle update" do
         s.write "lib/foo.rb", "FOO = '1.1'"
       end
 
-      bundle "update"
+      bundle "update --all"
 
       should_be_installed "foo 1.1"
     end
@@ -113,7 +113,7 @@ describe "bundle update" do
         gem 'foo', :git => "#{@remote.path}", :tag => "fubar"
       G
 
-      bundle "update", :exitstatus => true
+      bundle "update --all", :exitstatus => true
       expect(exitstatus).to eq(0)
     end
 
@@ -188,7 +188,7 @@ describe "bundle update" do
 
       lib_path("foo-1.0").join(".git").rmtree
 
-      bundle :update, :expect_err => true
+      bundle "update --all", :expect_err => true
       expect(out).to include(lib_path("foo-1.0").to_s)
     end
 

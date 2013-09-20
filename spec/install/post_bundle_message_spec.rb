@@ -113,28 +113,28 @@ describe "post bundle message" do
 
   describe "for bundle update" do
     it "without any options" do
-      bundle :update
+      bundle "update --all"
       expect(out).not_to include("Gems in the groups")
       expect(out).to include(bundle_updated_message)
     end
 
     it "with --without one group" do
       bundle :install, :without => :emo
-      bundle :update
+      bundle "update --all"
       expect(out).to include("Gems in the group emo were not installed")
       expect(out).to include(bundle_updated_message)
     end
 
     it "with --without two groups" do
       bundle "install --without emo test"
-      bundle :update
+      bundle "update --all"
       expect(out).to include("Gems in the groups emo and test were not installed")
       expect(out).to include(bundle_updated_message)
     end
 
     it "with --without more groups" do
       bundle "install --without emo obama test"
-      bundle :update
+      bundle "update --all"
       expect(out).to include("Gems in the groups emo, obama and test were not installed")
       expect(out).to include(bundle_updated_message)
     end
