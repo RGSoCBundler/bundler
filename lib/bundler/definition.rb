@@ -300,6 +300,9 @@ module Bundler
           handled << dep.name
       end
 
+      out << "\n"
+      out << "BUNDLER\n"
+
       out
     end
 
