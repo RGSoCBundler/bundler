@@ -39,7 +39,7 @@ describe "lockfile" do
         rails
 
       BUNDLER
-        #{Bundler::VERSION}
+        #{Bundler::VERSION}  # 1.4.0.rc.1
     G
 
   end
@@ -79,7 +79,17 @@ describe "lockfile" do
         rails
 
       BUNDLER
+        #{Bundler::VERSION}
     L
 
+    expect(File.read(bundled_app("Gemfile.lock"))).to match("BUNDLER\n  1.3.5")
+
+    lockfile_bundler_version = File.read(bundled_app("Gemfile.lock")).gsub(/#{Bundler::VERSION}/, "1.5.0.0")
+
+    File.open(bundled_app("Gemfile.lock"), "wb"){|f| f.puts(lockfile_bundler_version) }
+
+    expect(File.read(bundled_app("Gemfile.lock"))).not_to match("1.3.5")
+
   end
+
 end
