@@ -16,6 +16,7 @@ module Bundler
 
     DEPENDENCIES = "DEPENDENCIES"
     PLATFORMS    = "PLATFORMS"
+    BUNDLER      = "BUNDLER"
     GIT          = "GIT"
     GEM          = "GEM"
     PATH         = "PATH"
@@ -28,6 +29,7 @@ module Bundler
       @dependencies = []
       @state        = :source
       @specs        = {}
+      @bundler    ||= ""
 
       if lockfile.match(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your Gemfile.lock contains merge conflicts.\n" \
@@ -39,6 +41,8 @@ module Bundler
           @state = :dependency
         elsif line == PLATFORMS
           @state = :platform
+        elsif line == BUNDLER
+          @bundler = "#{Bundler::VERSION}"
         else
           send("parse_#{@state}", line)
         end
