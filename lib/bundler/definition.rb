@@ -302,6 +302,7 @@ module Bundler
 
       out << "\n"
       out << "BUNDLER\n"
+      out << "  #{Bundler::VERSION}"
 
       out
     end
