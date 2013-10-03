@@ -65,7 +65,7 @@ describe Bundler::Dsl do
         gem 'rails', '~> 4.0.0'
       G
       bundle :install
-      expect(out).to include("You specified:")
+      expect(out).to include("more than once")
     end
   end
 end

@@ -88,10 +88,11 @@ module Bundler
                             "You specified: #{current.name} (#{current.requirement}) and " \
                             "#{dep.name} (#{dep.requirement})\n"
           end
-        else
-          Bundler.ui.warn "You specified: #{current.name} (#{current.requirement}) more than once.\n" \
-                           "This will not effect performance but you may want to delete duplicates to keep your code DRY."
-        end
+          else
+            Bundler.ui.warn "Your Gemfile lists the gem #{current.name} (#{current.requirement}) more than once.\n"\
+                             "You should probably have only one of them. While it's not a problem now, it could cause
+                               errors if you change the version of just one of them later."
+          end
 
         if current.source != dep.source
           if current.type == :development
