@@ -154,9 +154,12 @@ module Bundler
     end
 
     def locked_gems
-      @locked_gems ||= begin
+      return @locked_gems if defined?(@locked_gems)
+      if Bundler.default_lockfile.exist?
         lock = Bundler.read_file(Bundler.default_lockfile)
-        LockfileParser.new(lock)
+        @lock_gems = LockfileParser.new(lock)
+      else
+        @locked_gems = nil
       end
     end
 
@@ -362,9 +365,13 @@ module Bundler
     end
 
     def locked_bundler_version
-      @locked_bundler_version = Bundler.locked_gems.bundler
-      if @locked_bundler_version > "#{Bundler::VERSION}"
-        @locked_bundler_version
+      if Bundler.default_lockfile.exist?
+        lock = Bundler.read_file(Bundler.default_lockfile)
+        @locked_gems = LockfileParser.new(lock)
+        @locked_bundler_version = @locked_gems.bundler
+        if @locked_bundler_version > "#{Bundler::VERSION}"
+          @locked_bundler_version
+        end
       end
     end
 
