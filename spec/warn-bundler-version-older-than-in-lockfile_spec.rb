@@ -88,7 +88,9 @@ describe "lockfile" do
 
     File.open(bundled_app("Gemfile.lock"), "wb"){|f| f.puts(lockfile_bundler_version) }
 
-    expect(File.read(bundled_app("Gemfile.lock"))).not_to match("1.3.5")
+    expect(File.read(bundled_app("Gemfile.lock"))).not_to match("BUNDLER\n  1.3.5")
+
+    expect(bundle :install).to include("Your bundle is complete!")
 
   end
 
