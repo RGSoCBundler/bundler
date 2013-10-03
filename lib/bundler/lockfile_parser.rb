@@ -12,7 +12,7 @@ require "strscan"
 
 module Bundler
   class LockfileParser
-    attr_reader :sources, :dependencies, :specs, :platforms
+    attr_reader :sources, :dependencies, :specs, :platforms, :bundler
 
     DEPENDENCIES = "DEPENDENCIES"
     PLATFORMS    = "PLATFORMS"
@@ -29,7 +29,7 @@ module Bundler
       @dependencies = []
       @state        = :source
       @specs        = {}
-      @bundler    ||= ""
+      @bundler      = ""
 
       if lockfile.match(/<<<<<<<|=======|>>>>>>>|\|\|\|\|\|\|\|/)
         raise LockfileError, "Your Gemfile.lock contains merge conflicts.\n" \
