@@ -184,6 +184,8 @@ module Bundler
       "Specify the number of jobs to run in parallel"
 
     def install
+      raise InstallError, "You're using an older version of Bundler (#{Bundler::VERSION}) than the one specified in your Gemfile (#{Bundler.locked_bundler_version})! Maybe you should upgrade!" if Bundler.locked_bundler_version
+
       opts = options.dup
       if opts[:without]
         opts[:without] = opts[:without].map{|g| g.tr(' ', ':') }
