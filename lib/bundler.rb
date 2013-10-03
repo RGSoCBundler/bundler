@@ -361,6 +361,13 @@ module Bundler
       @ruby_version ||= SystemRubyVersion.new
     end
 
+    def locked_bundler_version
+      @locked_bundler_version = Bundler.locked_gems.bundler
+      if @locked_bundler_version > "#{Bundler::VERSION}"
+        @locked_bundler_version
+      end
+    end
+
   private
 
     def eval_yaml_gemspec(path, contents)
