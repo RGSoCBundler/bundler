@@ -90,6 +90,8 @@ describe "lockfile" do
 
     expect(File.read(bundled_app("Gemfile.lock"))).not_to match("BUNDLER\n  1.3.5")
 
+    bundle :install
+    expect(out).to include("You're using an older version of Bundler (#{Bundler::VERSION}) than the one specified in your Gemfile")
   end
 
 end
