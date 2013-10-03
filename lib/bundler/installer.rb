@@ -79,11 +79,17 @@ module Bundler
       # Since we are installing, we can resolve the definition
       # using remote specs
       unless local
-        options["local"] ?
-          @definition.resolve_with_cache! :
-          @definition.resolve_remotely!
+        if options["local"]
+          @definition.resolve_with_cache!
+        else
+          Bundler::Retry.new("source fetch").attempts do
+            @definition.resolve_remotely!
+          end
+        end
       end
-
+      # Must install gems in the order that the resolver provides
+      # as dependencies might actually affect the installation of
+      # the gem.
       Installer.post_install_messages = {}
 
       # the order that the resolver provides is significant, since
@@ -148,7 +154,7 @@ module Bundler
       if options[:binstubs_cmd] && spec.executables.empty?
         options = {}
         spec.runtime_dependencies.each do |dep|
-          bins = Bundler.definition.specs[dep].first.executables
+          bins = @definition.specs[dep].first.executables
           options[dep.name] = bins unless bins.empty?
         end
         if options.any?
@@ -233,9 +239,9 @@ module Bundler
       paths = []
 
       if groups.empty?
-        specs = Bundler.definition.requested_specs
+        specs = @definition.requested_specs
       else
-        specs = Bundler.definition.specs_for groups.map { |g| g.to_sym }
+        specs = @definition.specs_for groups.map { |g| g.to_sym }
       end
 
       specs.each do |spec|
@@ -244,7 +250,7 @@ module Bundler
         spec.require_paths.each do |path|
           full_path = File.join(spec.full_gem_path, path)
           gem_path = Pathname.new(full_path).relative_path_from(Bundler.root.join(bundler_path))
-          paths << gem_path.to_s.sub("#{SystemRubyVersion.new.engine}/#{RbConfig::CONFIG['ruby_version']}", '#{ruby_engine}/#{ruby_version}')
+          paths << gem_path.to_s.sub("#{Bundler.ruby_version.engine}/#{RbConfig::CONFIG['ruby_version']}", '#{ruby_engine}/#{ruby_version}')
         end
       end
 

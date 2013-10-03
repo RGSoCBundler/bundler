@@ -43,6 +43,8 @@ namespace :spec do
       system("sudo sed -i '/secure_path/d' /etc/sudoers")
       # Install groff for the ronn gem
       system("sudo apt-get install groff -y")
+      # Switch to the Bluebox DNS servers in the Travis data center
+      system("printf 'nameserver 199.91.168.70\nnameserver 199.91.168.71\n' | sudo tee /etc/resolv.conf")
       # Install the other gem deps, etc.
       Rake::Task["spec:deps"].invoke
     end
@@ -89,7 +91,9 @@ begin
     namespace :rubygems do
       rubyopt = ENV["RUBYOPT"]
       # When editing this list, also edit .travis.yml!
-      %w(master 2.0 v1.3.6 v1.3.7 v1.4.2 v1.5.3 v1.6.2 v1.7.2 v1.8.25 v2.0.6).each do |rg|
+      branches = %w(master 2.1)
+      releases = %w(v1.3.6 v1.3.7 v1.4.2 v1.5.3 v1.6.2 v1.7.2 v1.8.27 v2.0.10 v2.1.5)
+      (branches + releases).each do |rg|
         desc "Run specs with Rubygems #{rg}"
         RSpec::Core::RakeTask.new(rg) do |t|
           t.rspec_opts = %w(-fs --color)

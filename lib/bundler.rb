@@ -33,6 +33,7 @@ module Bundler
   autoload :MatchPlatform,         'bundler/match_platform'
   autoload :RemoteSpecification,   'bundler/remote_specification'
   autoload :Resolver,              'bundler/resolver'
+  autoload :Retry,                 'bundler/retry'
   autoload :RubyVersion,           'bundler/ruby_version'
   autoload :RubyDsl,               'bundler/ruby_dsl'
   autoload :Runtime,               'bundler/runtime'
@@ -354,6 +355,10 @@ module Bundler
 
     def git_present?
       @git_present ||= Bundler.which("git")
+    end
+
+    def ruby_version
+      @ruby_version ||= SystemRubyVersion.new
     end
 
   private
