@@ -39,7 +39,7 @@ describe "lockfile" do
         rails
 
       BUNDLER
-        #{Bundler::VERSION}  # 1.4.0.rc.1
+        #{Bundler::VERSION}
     G
 
   end
