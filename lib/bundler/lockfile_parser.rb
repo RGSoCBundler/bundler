@@ -42,7 +42,7 @@ module Bundler
         elsif line == PLATFORMS
           @state = :platform
         elsif line == BUNDLER
-          @bundler = "#{Bundler::VERSION}"
+          @state = :bundler
         else
           send("parse_#{@state}", line)
         end
@@ -141,6 +141,12 @@ module Bundler
     def parse_platform(line)
       if line =~ /^  (.*)$/
         @platforms << Gem::Platform.new($1)
+      end
+    end
+
+    def parse_bundler(line)
+      if line =~ /^  (.*)$/
+        @bundler = Gem::Version.new($1)
       end
     end
 
