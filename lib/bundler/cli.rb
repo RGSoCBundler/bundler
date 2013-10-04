@@ -184,8 +184,6 @@ module Bundler
       "Specify the number of jobs to run in parallel"
 
     def install
-      raise InstallError, "You're using an older version of Bundler (#{Bundler::VERSION}) than the one specified in your Gemfile (#{Bundler.locked_bundler_version})! Maybe you should upgrade!" if Bundler.locked_bundler_version
-
       opts = options.dup
       if opts[:without]
         opts[:without] = opts[:without].map{|g| g.tr(' ', ':') }
@@ -276,6 +274,12 @@ module Bundler
       end
 
       clean if Bundler.settings[:clean] && Bundler.settings[:path]
+
+      if Bundler.locked_bundler_version
+        Bundler.ui.warn "You're using an older version of Bundler (#{Bundler::VERSION}) than " \
+          "the one specified in your Gemfile (#{Bundler.locked_bundler_version})!" \
+          "Please upgrade by running `gem install bundler`."
+      end
     rescue GemNotFound, VersionConflict => e
       if opts[:local] && Bundler.app_cache.exist?
         Bundler.ui.warn "Some gems seem to be missing from your vendor/cache directory."
