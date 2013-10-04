@@ -275,9 +275,9 @@ module Bundler
 
       clean if Bundler.settings[:clean] && Bundler.settings[:path]
 
-      if Bundler.locked_bundler_version
+      if Bundler.lock.bundler_version > Gem::Version.new(Bundler::VERSION)
         Bundler.ui.warn "You're using an older version of Bundler (#{Bundler::VERSION}) than " \
-          "the one specified in your Gemfile (#{Bundler.locked_bundler_version})!" \
+          "the one specified in your Gemfile (#{Bundler.lock.bundler_version})!" \
           "Please upgrade by running `gem install bundler`."
       end
     rescue GemNotFound, VersionConflict => e

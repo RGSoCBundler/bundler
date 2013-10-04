@@ -364,17 +364,6 @@ module Bundler
       @ruby_version ||= SystemRubyVersion.new
     end
 
-    def locked_bundler_version
-      if Bundler.default_lockfile.exist?
-        lock = Bundler.read_file(Bundler.default_lockfile)
-        @locked_gems = LockfileParser.new(lock)
-        @locked_bundler_version = @locked_gems.bundler
-        if @locked_bundler_version > "#{Bundler::VERSION}"
-          @locked_bundler_version
-        end
-      end
-    end
-
   private
 
     def eval_yaml_gemspec(path, contents)
