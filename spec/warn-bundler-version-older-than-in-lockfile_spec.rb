@@ -79,19 +79,11 @@ describe "lockfile" do
         rails
 
       BUNDLER
-        #{Bundler::VERSION}
+        100.1
     L
 
-    expect(File.read(bundled_app("Gemfile.lock"))).to match("BUNDLER\n  1.3.5")
-
-    replace_bundler_version = File.read(bundled_app("Gemfile.lock")).gsub(/#{Bundler::VERSION}/, "1.4.0.rc.1")
-
-    File.open(bundled_app("Gemfile.lock"), "wb"){|f| f.puts(replace_bundler_version) }
-
-    expect(File.read(bundled_app("Gemfile.lock"))).not_to match("BUNDLER\n  1.3.5")
-
     bundle :install
-    expect(out).to include("You're using an older version of Bundler (#{Bundler::VERSION}) than the one specified in your Gemfile")
+    expect(out).to include("You're using an older version of Bundler (#{Bundler::VERSION}) than the one specified in your Gemfile (100.1)")
   end
 
 end
