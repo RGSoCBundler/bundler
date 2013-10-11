@@ -528,7 +528,7 @@ G
         build_gem "activesupport", "3.0"
       end
 
-      bundle :update, :exitstatus => true
+      bundle 'update --force', :exitstatus => true
       should_be_patchlevel_incorrect
     end
   end

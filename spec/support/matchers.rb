@@ -71,6 +71,8 @@ module Spec
       should_be_locked
       spaces = expected[/\A\s+/, 0] || ""
       expected.gsub!(/^#{spaces}/, '')
+      bundler_version = "\nBUNDLER\n  #{Bundler::VERSION}\n"
+      expected.gsub!(/\z/, bundler_version) unless expected.match(/BUNDLER/)
       expect(bundled_app("Gemfile.lock").read).to eq(expected)
     end
   end

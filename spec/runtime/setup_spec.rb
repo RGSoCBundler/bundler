@@ -374,7 +374,7 @@ describe "Bundler.setup" do
         Dir["**/*"].each do |f|
           File.directory?(f) ?
             File.chmod(0555, f) :
-            File.chmod(0444, f)
+            File.chmod(0644, f)
         end
         should_be_installed "rack 1.0.0"
       ensure

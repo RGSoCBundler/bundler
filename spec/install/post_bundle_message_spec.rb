@@ -16,7 +16,7 @@ describe "post bundle message" do
   let(:bundle_show_message)       {"Use `bundle show [gemname]` to see where a bundled gem is installed."}
   let(:bundle_deployment_message) {"It was installed into ./vendor"}
   let(:bundle_complete_message)   {"Your bundle is complete!"}
-  let(:bundle_updated_message)    {"Your bundle is updated!"}
+  let(:bundle_updated_message)    {"Run `bundle update GEM` to update a specific gem. Run `bundle update --force` if you really want to update all gems."}
 
   describe "for fresh bundle install" do
     it "without any options" do
@@ -120,22 +120,22 @@ describe "post bundle message" do
 
     it "with --without one group" do
       bundle :install, :without => :emo
-      bundle :update
       expect(out).to include("Gems in the group emo were not installed")
+      bundle :update
       expect(out).to include(bundle_updated_message)
     end
 
     it "with --without two groups" do
       bundle "install --without emo test"
-      bundle :update
       expect(out).to include("Gems in the groups emo and test were not installed")
+      bundle :update
       expect(out).to include(bundle_updated_message)
     end
 
     it "with --without more groups" do
       bundle "install --without emo obama test"
-      bundle :update
       expect(out).to include("Gems in the groups emo, obama and test were not installed")
+      bundle :update
       expect(out).to include(bundle_updated_message)
     end
   end

@@ -761,6 +761,9 @@ describe "the lockfile format" do
 
       DEPENDENCIES
         omg!
+
+      BUNDLER
+        #{Bundler::VERSION}
     L
   end
 
@@ -775,10 +778,11 @@ describe "the lockfile format" do
         source "file://#{gem_repo2}"
         gem "rack"
       G
-      set_lockfile_mtime_to_known_value
+      #set_lockfile_mtime_to_known_value
     end
 
     it "generates Gemfile.lock with \\n line endings" do
+      set_lockfile_mtime_to_known_value
       expect(File.read(bundled_app("Gemfile.lock"))).not_to match("\r\n")
       should_be_installed "rack 1.0"
     end
@@ -786,6 +790,7 @@ describe "the lockfile format" do
     context "during updates" do
 
       it "preserves Gemfile.lock \\n line endings" do
+        set_lockfile_mtime_to_known_value
         update_repo2
 
         expect { bundle "update --force" }.to change { File.mtime(bundled_app('Gemfile.lock')) }
@@ -794,6 +799,7 @@ describe "the lockfile format" do
       end
 
       it "preserves Gemfile.lock \\n\\r line endings" do
+        set_lockfile_mtime_to_known_value
         update_repo2
         win_lock = File.read(bundled_app("Gemfile.lock")).gsub(/\n/, "\r\n")
         File.open(bundled_app("Gemfile.lock"), "wb"){|f| f.puts(win_lock) }
@@ -808,6 +814,7 @@ describe "the lockfile format" do
     context "when nothing changes" do
 
       it "preserves Gemfile.lock \\n line endings" do
+        File.mtime(bundled_app('Gemfile.lock'))
         expect { ruby <<-RUBY
                    require 'rubygems'
                    require 'bundler'
@@ -817,9 +824,9 @@ describe "the lockfile format" do
       end
 
       it "preserves Gemfile.lock \\n\\r line endings" do
+        mtime = File.mtime(bundled_app('Gemfile.lock'))
         win_lock = File.read(bundled_app("Gemfile.lock")).gsub(/\n/, "\r\n")
         File.open(bundled_app("Gemfile.lock"), "wb"){|f| f.puts(win_lock) }
-        set_lockfile_mtime_to_known_value
 
         expect { ruby <<-RUBY
                    require 'rubygems'

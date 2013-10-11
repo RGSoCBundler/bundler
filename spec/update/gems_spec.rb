@@ -3,7 +3,7 @@ require "spec_helper"
 describe "bundle update" do
   it "prints a message" do
     bundle "update"
-    expect(out).to include("Are you sure you want to update every single gem in your bundle?!\n\nIf yes, run bundle update --all.\nIf you want to update an individual gem, run bundle update <gem_name>.\nIf not, have a good day!")
+    expect(out).to include("Run `bundle update GEM` to update a specific gem. Run `bundle update --force` if you really want to update all gems.")
   end
 
   it "does not print bundle was updated" do
@@ -12,7 +12,7 @@ describe "bundle update" do
   end
 end
 
-describe "bundle update --all" do
+describe "bundle update --force" do
   before :each do
     build_repo2
 

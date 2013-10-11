@@ -153,10 +153,13 @@ module Bundler
       end
     end
 
-    def locked_gems
-      @locked_gems ||= begin
+    def lock
+      return @lock if defined?(@lock)
+      if Bundler.default_lockfile.exist?
         lock = Bundler.read_file(Bundler.default_lockfile)
-        LockfileParser.new(lock)
+        @lock = LockfileParser.new(lock)
+      else
+        @lock = nil
       end
     end
 

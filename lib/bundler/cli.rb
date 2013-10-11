@@ -248,6 +248,7 @@ module Bundler
       Bundler.ui.level            = "warn" if opts[:quiet]
       Bundler::Fetcher.disable_endpoint = opts["full-index"]
       Bundler.settings[:disable_shared_gems] = Bundler.settings[:path] ? '1' : nil
+      locking_bundler_version = Bundler.lock.bundler_version if Bundler.lock
 
       # rubygems plugins sometimes hook into the gem install process
       Gem.load_env_plugins if Gem.respond_to?(:load_env_plugins)
@@ -274,6 +275,12 @@ module Bundler
       end
 
       clean if Bundler.settings[:clean] && Bundler.settings[:path]
+
+      if locking_bundler_version && locking_bundler_version > Gem::Version.new(Bundler::VERSION)
+        Bundler.ui.warn "You're using an older version of Bundler (#{Bundler::VERSION}) than " \
+          "the one specified in your Gemfile (#{locking_bundler_version})!" \
+          " Please upgrade by running `gem install bundler`."
+      end
     rescue GemNotFound, VersionConflict => e
       if opts[:local] && Bundler.app_cache.exist?
         Bundler.ui.warn "Some gems seem to be missing from your vendor/cache directory."
@@ -303,8 +310,6 @@ module Bundler
       "Only output warnings and errors."
     method_option "full-index", :type => :boolean, :banner =>
         "Use the rubygems modern index instead of the API endpoint"
-    method_option "all", :type => :boolean, :banner =>
-        "updates all gems"
     def update(*gems)
       sources = Array(options[:source])
       Bundler.ui.level = "warn" if options[:quiet]
@@ -312,16 +317,12 @@ module Bundler
       if gems.empty? && !options[:force]
         Bundler.ui.error "Run `bundle update GEM` to update a specific gem. Run `bundle update --force` if you really want to update all gems."
         exit 1
-      end
-
-      if !options[:all] && gems.empty? && sources.empty?
-        return Bundler.ui.info("Are you sure you want to update every single gem in your bundle?!\n\nIf yes, run bundle update --all.\nIf you want to update an individual gem, run bundle update <gem_name>.\nIf not, have a good day!")
-      elsif options[:all] && gems.empty? && sources.empty?
+      elsif options[:force] && gems.empty? && sources.empty?
         # We're doing a full update
         Bundler.definition(true)
       else
         # cycle through the requested gems, just to make sure they exist
-        names = Bundler.locked_gems.specs.map{ |s| s.name }
+        names = Bundler.lock.specs.map{ |s| s.name }
         gems.each do |g|
           next if names.include?(g)
           raise GemNotFound, not_found_message(g, names)
