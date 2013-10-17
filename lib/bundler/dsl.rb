@@ -42,6 +42,7 @@ module Bundler
       path              = opts && opts[:path] || '.'
       name              = opts && opts[:name] || '{,*}'
       development_group = opts && opts[:development_group] || :development
+
       expanded_path     = File.expand_path(path, Bundler.default_gemfile.dirname)
 
       gemspecs = Dir[File.join(expanded_path, "#{name}.gemspec")]
@@ -83,11 +84,15 @@ module Bundler
           elsif dep.type == :development
             return
           else
-            raise GemfileError, "You cannot specify the same gem twice with different version requirements. \n" \
+            raise GemfileError, "You cannot specify the same gem twice with different version requirements.\n" \
                             "You specified: #{current.name} (#{current.requirement}) and " \
                             "#{dep.name} (#{dep.requirement})\n"
           end
-        end
+          else
+            Bundler.ui.warn "Your Gemfile lists the gem #{current.name} (#{current.requirement}) more than once.\n"\
+                             "You should probably have only one of them. While it's not a problem now, it could cause
+                               errors if you change the version of just one of them later."
+          end
 
         if current.source != dep.source
           if current.type == :development
